@@ -1,15 +1,18 @@
 import React, { useState } from 'react';
-import { TextField, Button, Typography, Box,Alert } from '@mui/material';
+import { TextField, Button, Typography, Box, Alert } from '@mui/material';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+
 export default function Register() {
-  const[status,setStatus]=useState(false);
-  const[name,setName]=useState('');
-  const[age,setAge]=useState(0);
-  const[email,setEmail]=useState('');
-  const[aadharno,setAadharno]=useState('');
-  const[password,setPassword]=useState('');
-  const[jobtitle,setJobtitle]=useState('');
-    
+  const [status, setStatus] = useState(false);
+  const [name, setName] = useState('');
+  const [age, setAge] = useState(0);
+  const [email, setEmail] = useState('');
+  const [aadharno, setAadharno] = useState('');
+  const [password, setPassword] = useState('');
+  const [jobtitle, setJobtitle] = useState('');
+  const navigate = useNavigate();
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
@@ -17,9 +20,9 @@ export default function Register() {
         name: name,
         age: age,
         email: email,
-        aadharno:aadharno,
-        password:password,
-        jobtitle:jobtitle,
+        aadharno: aadharno,
+        password: password,
+        jobtitle: jobtitle,
       });
       if (response.status === 200) {
         setStatus(true);
@@ -27,7 +30,6 @@ export default function Register() {
         console.log('Unexpected response status:', response.status);
       }
     } catch (error) {
-      console.log(status);
       if (error.response) {
         console.log(error.response.data);
         console.log(error.response.status);
@@ -38,8 +40,12 @@ export default function Register() {
 
   const containerStyle = {
     position: 'relative',
-    minHeight: '100vh', // Full viewport height
+    minHeight: '100vh',
     overflow: 'hidden',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'flex-start', // Align to the left
+    paddingLeft: '2rem', // Add some left padding
   };
 
   const backgroundStyle = {
@@ -51,30 +57,30 @@ export default function Register() {
     left: 0,
     right: 0,
     bottom: 0,
-    zIndex: -1, // Keep it behind other elements
+    zIndex: -1,
   };
 
   const boxStyle = {
-    padding: '2rem',
-    borderRadius: '8px',
-    boxShadow: '0 4px 20px rgba(0, 0, 0, 0.2)',
-    backgroundColor: 'rgba(255, 255, 255, 0.9)', // Semi-transparent background for form
-    zIndex: 1, // Ensure it is above the background
-    width: '100%', // Full width for the form box
-    maxWidth: '400px', // Set a max width for better appearance
-    margin: 'auto', // Center the form box
+    padding: '1.5rem', // Reduced padding to decrease length
+    borderRadius: '12px',
+    boxShadow: '0 4px 30px rgba(0, 0, 0, 0.3)',
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    zIndex: 1,
+    width: '100%', 
+    maxWidth: '400px',
   };
 
   const titleStyle = {
-    marginBottom: '1.5rem',
-    color: '#333',
+    marginBottom: '1rem', // Reduced margin
+    color: '#4A90E2',
+    textAlign: 'center', // Center the title
   };
 
   const inputStyle = {
-    marginBottom: '1rem',
+    marginBottom: '0.5rem', // Reduced margin for inputs
     '& .MuiOutlinedInput-root': {
       '& fieldset': {
-        borderColor: '#007bff',
+        borderColor: '#4A90E2',
       },
       '&:hover fieldset': {
         borderColor: '#0056b3',
@@ -87,7 +93,7 @@ export default function Register() {
 
   const buttonStyle = {
     marginTop: '1rem',
-    backgroundColor: '#007bff',
+    backgroundColor: '#4A90E2',
     color: '#fff',
     '&:hover': {
       backgroundColor: '#0056b3',
@@ -98,7 +104,7 @@ export default function Register() {
     <Box sx={containerStyle}>
       <Box sx={backgroundStyle} />
       <Box sx={boxStyle}>
-        <Typography variant="h5" align="center" sx={titleStyle}>
+        <Typography variant="h5" sx={titleStyle}>
           Register
         </Typography>
         <form onSubmit={handleSubmit}>
@@ -110,7 +116,7 @@ export default function Register() {
             required 
             sx={inputStyle} 
             variant="outlined"
-            onChange={(e)=>{setName(e.target.value)}}
+            onChange={(e) => { setName(e.target.value); }}
           />
           <TextField 
             fullWidth 
@@ -121,7 +127,7 @@ export default function Register() {
             required 
             sx={inputStyle} 
             variant="outlined"
-            onChange={(e)=>{setAge(e.target.value)}}
+            onChange={(e) => { setAge(e.target.value); }}
           />
           <TextField 
             fullWidth 
@@ -132,7 +138,7 @@ export default function Register() {
             required 
             sx={inputStyle} 
             variant="outlined"
-            onChange={(e)=>{setEmail(e.target.value)}}
+            onChange={(e) => { setEmail(e.target.value); }}
           />
           <TextField 
             fullWidth 
@@ -145,7 +151,7 @@ export default function Register() {
             required 
             sx={inputStyle} 
             variant="outlined"
-            onChange={(e)=>{setAadharno(e.target.value)}}
+            onChange={(e) => { setAadharno(e.target.value); }}
           />
           <TextField 
             fullWidth 
@@ -156,7 +162,7 @@ export default function Register() {
             required 
             sx={inputStyle} 
             variant="outlined"
-            onChange={(e)=>{setPassword(e.target.value)}}
+            onChange={(e) => { setPassword(e.target.value); }}
           />
           <TextField 
             fullWidth 
@@ -166,7 +172,7 @@ export default function Register() {
             required 
             sx={inputStyle} 
             variant="outlined"
-            onChange={(e)=>{setJobtitle(e.target.value)}}
+            onChange={(e) => { setJobtitle(e.target.value); }}
           />
           <Button 
             variant="contained" 
@@ -176,6 +182,15 @@ export default function Register() {
           >
             Register
           </Button>
+          <Typography variant="body2" align="center" sx={{ marginTop: '1rem' }}>
+            Already have an account? 
+            <Button 
+              onClick={() => navigate('/login')} 
+              color="primary" 
+              style={{ textDecoration: 'underline', padding: 0 }}>
+              Login
+            </Button>
+          </Typography>
           {status && <Alert severity="success"> Registered successfully</Alert>}
         </form>
       </Box>
