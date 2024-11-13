@@ -18,7 +18,7 @@ export default function Login() {
             });
             if (response.data === "Login Successfull") {
                 setStatus('success');
-                navigate('/main');
+                navigate('/layout');
             } else {
                 setStatus('error');
             }
