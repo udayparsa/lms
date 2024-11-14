@@ -12,12 +12,14 @@ export default function Login() {
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
+            localStorage.clear();
             const response = await axios.post('http://localhost:8080/login', {
                 email: email,
                 password: password,
             });
             if (response.data === "Login Successfull") {
                 setStatus('success');
+                localStorage.setItem('email',email);
                 navigate('/layout');
             } else {
                 setStatus('error');
