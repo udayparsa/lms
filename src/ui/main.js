@@ -8,7 +8,7 @@ import ScheduleIcon from '@mui/icons-material/Schedule';
 import SettingsIcon from '@mui/icons-material/Settings';
 import SupportAgentIcon from '@mui/icons-material/SupportAgent';
 import ApprovalIcon from '@mui/icons-material/Approval';
-export default function Sidebar() {
+export default function Main() {
   return (
     <Drawer
       variant="permanent"

@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Box, TextField, Typography, Button, MenuItem } from '@mui/material';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function LoanOptions() {
   const [formData, setFormData] = useState({
@@ -10,7 +12,6 @@ export default function LoanOptions() {
     empstatus: '',
     address: '',
     age: ''
-   
   });
 
   const handleChange = (e) => {
@@ -22,20 +23,29 @@ export default function LoanOptions() {
     setFormData({ ...formData, file: e.target.files[0] });
   };
 
-  const handleSubmit= async(event)=>{
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log(formData);
-    try{
-      const response= await axios.post('http://localhost:8080/upload',formData);
-      console.log(response)
-    }catch(error){
+    const data = new FormData();
+    data.append('file', formData.file);
+    data.append('name', formData.name);
+    data.append('creditscore', formData.creditscore);
+    data.append('empstatus', formData.empstatus);
+    data.append('address', formData.address);
+    data.append('age', formData.age);
+
+    try {
+      const response = await axios.post('http://localhost:8080/upload', data, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      toast.success('Application submitted successfully!');
+      console.log(response.data);
+    } catch (error) {
       if (error.response) {
-        console.log(error.response.data);
-        console.log(error.response.status);
-        console.log(error.response.headers);
+        toast.error('Error submitting application');
+        console.error('Error:', error.response.data);
       }
     }
-  }
+  };
 
   return (
     <Box
@@ -48,6 +58,7 @@ export default function LoanOptions() {
         backgroundColor: '#f9f9f9',
       }}
     >
+      <ToastContainer />
       <Typography variant="h4" align="center" gutterBottom sx={{ color: '#006064', fontWeight: 600 }}>
         Apply for Loan
       </Typography>
@@ -116,6 +127,7 @@ export default function LoanOptions() {
           </Typography>
           <input
             type="file"
+            name="file"
             onChange={handleFileChange}
           />
         </Box>
