@@ -1,18 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, TextField, Typography, Button, MenuItem } from '@mui/material';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-export default function LoanOptions() {
+export default function LoanOptions({ loanType }) {
   const [formData, setFormData] = useState({
     file: null,
     name: '',
     creditscore: '',
     empstatus: '',
     address: '',
-    age: ''
+    age: '',
+    loanType: loanType || ''  // Initialize with loanType prop if provided
   });
+
+  useEffect(() => {
+    // Set loanType from the prop on component load
+    setFormData((prevData) => ({ ...prevData, loanType }));
+  }, [loanType]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -25,6 +31,12 @@ export default function LoanOptions() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    if (!formData.file) {
+      toast.error('Please select a file to upload.');
+      return;
+    }
+
     const data = new FormData();
     data.append('file', formData.file);
     data.append('name', formData.name);
@@ -32,6 +44,7 @@ export default function LoanOptions() {
     data.append('empstatus', formData.empstatus);
     data.append('address', formData.address);
     data.append('age', formData.age);
+    data.append('loanType', formData.loanType);
 
     try {
       const response = await axios.post('http://localhost:8080/upload', data, {
@@ -62,7 +75,7 @@ export default function LoanOptions() {
       <Typography variant="h4" align="center" gutterBottom sx={{ color: '#006064', fontWeight: 600 }}>
         Apply for Loan
       </Typography>
-      
+
       <form onSubmit={handleSubmit}>
         <TextField
           label="Name"
@@ -73,7 +86,7 @@ export default function LoanOptions() {
           required
           margin="normal"
         />
-        
+
         <TextField
           label="Credit Score"
           name="creditscore"
@@ -84,7 +97,7 @@ export default function LoanOptions() {
           required
           margin="normal"
         />
-        
+
         <TextField
           label="Employment Status"
           name="empstatus"
@@ -109,7 +122,7 @@ export default function LoanOptions() {
           required
           margin="normal"
         />
-        
+
         <TextField
           label="Age"
           name="age"
@@ -121,31 +134,35 @@ export default function LoanOptions() {
           margin="normal"
         />
 
-        <Box mt={2}>
-          <Typography variant="body1" gutterBottom>
-            Upload Document
-          </Typography>
+        <TextField
+          label="Loan Type"
+          name="loanType"
+          value={formData.loanType}
+          fullWidth
+          margin="normal"
+          disabled 
+        />
+
+        <Button
+          variant="outlined"
+          component="label"
+          fullWidth
+          sx={{ marginTop: 2 }}
+        >
+          Upload File
           <input
             type="file"
-            name="file"
+            hidden
             onChange={handleFileChange}
           />
-        </Box>
+        </Button>
 
         <Button
           type="submit"
           variant="contained"
+          color="primary"
           fullWidth
-          sx={{
-            marginTop: 3,
-            padding: 1.5,
-            backgroundColor: '#006064',
-            color: '#fff',
-            fontWeight: 'bold',
-            '&:hover': {
-              backgroundColor: '#004d40',
-            },
-          }}
+          sx={{ marginTop: 3 }}
         >
           Submit Application
         </Button>

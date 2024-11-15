@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Box, Typography, Card, CardMedia, CardContent, CardActions, Button, Grid, Dialog, DialogContent } from '@mui/material';
-import LoanOptions from './LoanOptions'; // Ensure this path is correct based on your file structure
+import LoanOptions from './LoanOptions';
 
 const loanTypes = [
   {
@@ -27,8 +27,10 @@ const loanTypes = [
 
 export default function Applyloan() {
   const [open, setOpen] = useState(false);
+  const [selectedLoanType, setSelectedLoanType] = useState('');
 
-  const handleClickOpen = () => {
+  const handleClickOpen = (loanType) => {
+    setSelectedLoanType(loanType);
     setOpen(true);
   };
 
@@ -70,7 +72,12 @@ export default function Applyloan() {
                 </Typography>
               </CardContent>
               <CardActions sx={{ justifyContent: 'center', paddingBottom: 2 }}>
-                <Button variant="contained" color="primary" sx={{ borderRadius: 2 }} onClick={handleClickOpen}>
+                <Button 
+                  variant="contained" 
+                  color="primary" 
+                  sx={{ borderRadius: 2 }} 
+                  onClick={() => handleClickOpen(loan.title)}
+                >
                   Apply Now
                 </Button>
               </CardActions>
@@ -86,7 +93,7 @@ export default function Applyloan() {
       {/* Dialog Component */}
       <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
         <DialogContent>
-          <LoanOptions />
+          <LoanOptions loanType={selectedLoanType} />
         </DialogContent>
       </Dialog>
     </Box>
