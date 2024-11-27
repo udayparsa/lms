@@ -1,9 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton } from '@mui/material';
+import {
+  Box,
+  Typography,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  IconButton,
+  Button,
+} from '@mui/material';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import axios from 'axios';
 
-export default function AppliedLoans() {
+export default function Loanhisory() {
   const [appliedLoans, setAppliedLoans] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -26,11 +38,16 @@ export default function AppliedLoans() {
 
   const viewPdf = async (email, loanType) => {
     try {
-      const response = await axios.get(`http://localhost:8080/api/pdf/view/${email}/${loanType}`, {
-        responseType: 'blob',
-      });
+      const response = await axios.get(
+      `http://localhost:8080/api/pdf/view/${email}/${loanType}`,
+        {
+          responseType: 'blob',
+        }
+      );
 
-      const fileURL = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }));
+      const fileURL = window.URL.createObjectURL(
+        new Blob([response.data], { type: 'application/pdf' })
+      );
       setSelectedPdfUrl(fileURL);
       setIsModalOpen(true);
     } catch (error) {
@@ -43,40 +60,85 @@ export default function AppliedLoans() {
     setSelectedPdfUrl('');
   };
 
+  const handleStatusChange = async (email, loanType, status) => {
+    try {
+      const response = await axios.post(
+        `http://localhost:8080/api/loan/updateStatus`,
+        {
+          email,
+          loanType,
+          status,
+        }
+      );
+      if (response.status === 200) {
+        setAppliedLoans((prevLoans) =>
+          prevLoans.map((loan) =>
+            loan.email === email && loan.loanType === loanType
+              ? { ...loan, status }
+              : loan
+          )
+        );
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   if (loading) {
     return (
       <Box sx={{ textAlign: 'center', marginTop: 5 }}>
-        <Typography variant="h6">Loading your applied loans...</Typography>
+        <Typography variant="h6">Loading loan applications...</Typography>
       </Box>
     );
   }
 
   if (appliedLoans.length === 0) {
     return (
-      <Box sx={{ textAlign: 'center', marginTop: 5  }}>
-        <Typography variant="h6">You have not applied for any loans yet.</Typography>
+      <Box sx={{ textAlign: 'center', marginTop: 5 }}>
+        <Typography variant="h6">No loan applications found.</Typography>
       </Box>
     );
   }
 
   return (
     <Box sx={{ padding: 5, backgroundColor: '#006064', minHeight: '100vh' }}>
-      <Typography variant="h4" align="center" gutterBottom sx={{ color: 'white', fontWeight: 600 }}>
-        Your Applied Loans
+      <Typography
+        variant="h4"
+        align="center"
+        gutterBottom
+        sx={{ color: 'white', fontWeight: 600 }}
+      >
+        Loan Applications
       </Typography>
 
       <TableContainer component={Paper} sx={{ marginTop: 3 }}>
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell><strong>Loan Type</strong></TableCell>
-              <TableCell><strong>Applicant Name</strong></TableCell>
-              <TableCell><strong>Credit Score</strong></TableCell>
-              <TableCell><strong>Employment Status</strong></TableCell>
-              <TableCell><strong>Age</strong></TableCell>
-              <TableCell><strong>Address</strong></TableCell>
-              <TableCell><strong>Phone Number</strong></TableCell>
-              <TableCell><strong>Actions</strong></TableCell>
+              <TableCell>
+                <strong>Loan Type</strong>
+              </TableCell>
+              <TableCell>
+                <strong>Applicant Name</strong>
+              </TableCell>
+              <TableCell>
+                <strong>Credit Score</strong>
+              </TableCell>
+              <TableCell>
+                <strong>Employment Status</strong>
+              </TableCell>
+              <TableCell>
+                <strong>Age</strong>
+              </TableCell>
+              <TableCell>
+                <strong>Address</strong>
+              </TableCell>
+              <TableCell>
+                <strong>Phone Number</strong>
+              </TableCell>
+              <TableCell>
+                <strong>Actions</strong>
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -90,9 +152,28 @@ export default function AppliedLoans() {
                 <TableCell>{loan.address}</TableCell>
                 <TableCell>{loan.phno}</TableCell>
                 <TableCell>
-                  <IconButton color="primary" onClick={() => viewPdf(loan.email, loan.loanType)}>
-                    <VisibilityIcon />
-                  </IconButton>
+                  <Box display="flex" gap={1}>
+                    <Button
+                      variant="contained"
+                      color="success"
+                      onClick={() => handleStatusChange(loan.email, loan.loanType, 'Accepted')}
+                    >
+                      Accept
+                    </Button>
+                    <Button
+                      variant="contained"
+                      color="error"
+                      onClick={() => handleStatusChange(loan.email, loan.loanType, 'Rejected')}
+                    >
+                      Reject
+                    </Button>
+                    <IconButton
+                      color="primary"
+                      onClick={() => viewPdf(loan.email, loan.loanType)}
+                    >
+                      <VisibilityIcon />
+                    </IconButton>
+                  </Box>
                 </TableCell>
               </TableRow>
             ))}

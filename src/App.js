@@ -6,6 +6,8 @@ import Home from './ui/home';
 import Layout from './ui/Layout';
 import Applyloans from './ui/applyloans';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import Appliedloans from './ui/appliedloans';
+import Loanhistory from './ui/loanhistory';
 
 function App() {
   return (
@@ -19,9 +21,9 @@ function App() {
           {/* Routes with Sidebar */}
           <Route path="/layout" element={<Layout />}>
             <Route path="dashboard" element={<div>Dashboard Page</div>} />
-            <Route path="applied-loans" element={<div>Applied Loans Page</div>} />
+            <Route path="applied-loans" element={<Appliedloans/>} />
             <Route path="applyloans" element={<Applyloans />} />
-            <Route path="loan-history" element={<div>Loan History Page</div>} />
+            <Route path="loan-history" element={<Loanhistory/>} />
             <Route path="repayment-schedule" element={<div>Repayment Schedule Page</div>} />
             <Route path="settings" element={<div>Settings Page</div>} />
             <Route path="support" element={<div>Support Page</div>} />

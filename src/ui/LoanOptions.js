@@ -7,17 +7,23 @@ import 'react-toastify/dist/ReactToastify.css';
 export default function LoanOptions({ loanType }) {
   const [formData, setFormData] = useState({
     file: null,
+    email: '',
     name: '',
     creditscore: '',
     empstatus: '',
     address: '',
     age: '',
-    loanType: loanType || ''  // Initialize with loanType prop if provided
+    loanType: loanType || '', // Initialize with loanType prop if provided
+    phno:'',
   });
 
   useEffect(() => {
-    // Set loanType from the prop on component load
-    setFormData((prevData) => ({ ...prevData, loanType }));
+    // Set loanType from the prop and fetch email from localStorage
+    setFormData((prevData) => ({
+      ...prevData,
+      loanType,
+      email: localStorage.getItem('email') || '',
+    }));
   }, [loanType]);
 
   const handleChange = (e) => {
@@ -32,6 +38,13 @@ export default function LoanOptions({ loanType }) {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
+    // Validate email and loan type
+    if (!formData.email || !formData.loanType) {
+      toast.error('Email or Loan Type is missing.');
+      return;
+    }
+
+    // Validate file selection
     if (!formData.file) {
       toast.error('Please select a file to upload.');
       return;
@@ -39,24 +52,30 @@ export default function LoanOptions({ loanType }) {
 
     const data = new FormData();
     data.append('file', formData.file);
+    data.append('email', formData.email);
     data.append('name', formData.name);
     data.append('creditscore', formData.creditscore);
     data.append('empstatus', formData.empstatus);
     data.append('address', formData.address);
     data.append('age', formData.age);
     data.append('loanType', formData.loanType);
+    data.append('phno',formData.phno);
 
     try {
       const response = await axios.post('http://localhost:8080/upload', data, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
-      toast.success('Application submitted successfully!');
+
+      toast.success(response.data.message || 'Application submitted successfully!');
       console.log(response.data);
     } catch (error) {
       if (error.response) {
-        toast.error('Error submitting application');
-        console.error('Error:', error.response.data);
+        // Show specific backend error message if available
+        toast.error(error.response.data.message || 'Error submitting application.');
+      } else {
+        toast.error('Error connecting to the server.');
       }
+      console.error('Error:', error);
     }
   };
 
@@ -140,30 +159,25 @@ export default function LoanOptions({ loanType }) {
           value={formData.loanType}
           fullWidth
           margin="normal"
-          disabled 
+          disabled
+        />
+        <TextField
+          label="Phone Number"
+          name="phno"
+          type="number"
+          value={formData.phno}
+          onChange={handleChange}
+          fullWidth
+          required
+          margin="normal"
         />
 
-        <Button
-          variant="outlined"
-          component="label"
-          fullWidth
-          sx={{ marginTop: 2 }}
-        >
+        <Button variant="outlined" component="label" fullWidth sx={{ marginTop: 2 }}>
           Upload File
-          <input
-            type="file"
-            hidden
-            onChange={handleFileChange}
-          />
+          <input type="file" hidden onChange={handleFileChange} />
         </Button>
 
-        <Button
-          type="submit"
-          variant="contained"
-          color="primary"
-          fullWidth
-          sx={{ marginTop: 3 }}
-        >
+        <Button type="submit" variant="contained" color="primary" fullWidth sx={{ marginTop: 3 }}>
           Submit Application
         </Button>
       </form>

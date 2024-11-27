@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Box, Typography, Card, CardMedia, CardContent, CardActions, Button, Grid, Dialog, DialogContent } from '@mui/material';
-import LoanOptions from './LoanOptions';
+import LoanOptions from './LoanOptions'; // Assuming LoanOptions is a separate component
 
 const loanTypes = [
   {
@@ -20,12 +20,12 @@ const loanTypes = [
   },
   {
     title: "Education Loans",
-    description: "Support your educational expenses.",
+    description: "Support your educational.",
     imageUrl: "https://cdn.dnaindia.com/sites/default/files/styles/full/public/2016/10/24/513072-student-loan-thinkstockphotos-102316.jpg",
   },
 ];
 
-export default function Applyloan() {
+export default function ApplyLoan() {
   const [open, setOpen] = useState(false);
   const [selectedLoanType, setSelectedLoanType] = useState('');
 
@@ -36,63 +36,73 @@ export default function Applyloan() {
 
   const handleClose = () => {
     setOpen(false);
+    setSelectedLoanType('');  // Clear the loan type when closing
   };
 
   return (
-    <Box sx={{ 
-      textAlign: 'center', 
-      p: 5, 
-      backgroundColor: '#e0f7fa', 
-      height: '100vh', 
-      display: 'flex', 
+    <Box sx={{
+      textAlign: 'center',
+      p: 5,
+      backgroundColor: '#e0f7fa',
+      height: '100vh',
+      display: 'flex',
       flexDirection: 'column',
-      justifyContent: 'center' 
+      justifyContent: 'center'
     }}>
       <Typography variant="h4" gutterBottom sx={{ fontWeight: 'bold', color: '#444' }}>
-        Apply Loans Here..!
+        Apply for Loans Here..!
       </Typography>
-      
-      <Grid container spacing={4} justifyContent="center">
-        {loanTypes.map((loan, index) => (
-          <Grid item xs={12} sm={6} md={3} key={index}>
-            <Card sx={{ maxWidth: 345, borderRadius: 3, boxShadow: 3 }}>
-              <CardMedia
-                component="img"
-                height="200"
-                image={loan.imageUrl}
-                alt={loan.title}
-                sx={{ borderTopLeftRadius: '12px', borderTopRightRadius: '12px' }}
-              />
-              <CardContent>
-                <Typography gutterBottom variant="h6" component="div" sx={{ fontWeight: 'bold', color: '#1a73e8' }}>
-                  {loan.title}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  {loan.description}
-                </Typography>
-              </CardContent>
-              <CardActions sx={{ justifyContent: 'center', paddingBottom: 2 }}>
-                <Button 
-                  variant="contained" 
-                  color="primary" 
-                  sx={{ borderRadius: 2 }} 
-                  onClick={() => handleClickOpen(loan.title)}
-                >
-                  Apply Now
-                </Button>
-              </CardActions>
-            </Card>
+
+      {/* Parent Card to wrap all loan options */}
+      <Card sx={{ maxWidth: 1500, margin: 'auto', padding: 3, borderRadius: 3, boxShadow: 3,backgroundColor:'#006064' }}>
+        <CardContent>
+          <Typography variant="h5" gutterBottom sx={{ fontWeight: 'bold', color: 'white' }}>
+            Choose a Loan Type
+          </Typography>
+          <Grid container spacing={4} justifyContent="center">
+            {loanTypes.map((loan, index) => (
+              <Grid item xs={12} sm={6} md={3} key={index}>
+                <Card sx={{ maxWidth: 345, borderRadius: 3, boxShadow: 3 }}>
+                  <CardMedia
+                    component="img"
+                    height="200"
+                    image={loan.imageUrl}
+                    alt={loan.title}
+                    sx={{ borderTopLeftRadius: '12px', borderTopRightRadius: '12px' }}
+                  />
+                  <CardContent>
+                    <Typography gutterBottom variant="h6" component="div" sx={{ fontWeight: 'bold', color: '#1a73e8' }}>
+                      {loan.title}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      {loan.description}
+                    </Typography>
+                  </CardContent>
+                  <CardActions sx={{ justifyContent: 'center', paddingBottom: 2 }}>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      sx={{ borderRadius: 2 }}
+                      onClick={() => handleClickOpen(loan.title)}
+                    >
+                      Apply Now
+                    </Button>
+                  </CardActions>
+                </Card>
+              </Grid>
+            ))}
           </Grid>
-        ))}
-      </Grid>
+        </CardContent>
+      </Card>
 
       <Box sx={{ mt: 4, textAlign: 'center', color: '#777' }}>
         <Typography variant="body2">© PARSA UDAY KUMAR | All Rights Reserved</Typography>
       </Box>
 
-      {/* Dialog Component */}
+      {/* Dialog for Loan Options */}
       <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
         <DialogContent>
+          {/* Passing selected loan type to LoanOptions component */}
           <LoanOptions loanType={selectedLoanType} />
         </DialogContent>
       </Dialog>
