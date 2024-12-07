@@ -15,7 +15,7 @@ import {
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import axios from 'axios';
 
-export default function Loanhisory() {
+export default function Adminhome() {
   const [appliedLoans, setAppliedLoans] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -74,13 +74,12 @@ export default function Loanhisory() {
       if (response.status === 200) {
         // Log to console
         console.log(`Loan status updated: ${email}, ${loanType}, ${status}`);
-        
-        // Update the loan status in the state
+  
+        // Update the loan status in the state and filter out the loan after update
         setAppliedLoans((prevLoans) =>
-          prevLoans.map((loan) =>
-            loan.email === email && loan.loanType === loanType
-              ? { ...loan, status }
-              : loan
+          prevLoans.filter(
+            (loan) =>
+              !(loan.email === email && loan.loanType === loanType) // Remove the updated loan from the list
           )
         );
   
@@ -92,6 +91,7 @@ export default function Loanhisory() {
       alert("Failed to update loan status. Please try again.");
     }
   };
+  
   
 
   return (

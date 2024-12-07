@@ -14,6 +14,8 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  Menu,
+  MenuItem,
 } from '@mui/material';
 import { Link } from 'react-router-dom';
 
@@ -63,6 +65,7 @@ const loanTypes = [
 export default function Home() {
   const [open, setOpen] = useState(false);
   const [selectedLoan, setSelectedLoan] = useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
 
   const handleClickOpen = (loan) => {
     setSelectedLoan(loan);
@@ -74,6 +77,14 @@ export default function Home() {
     setSelectedLoan(null);
   };
 
+  const handleMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
   return (
     <Box
       sx={{
@@ -83,20 +94,46 @@ export default function Home() {
         backgroundPosition: 'center',
         minHeight: '100vh',
         padding: '20px',
-        backdropFilter: 'blur(8px)', // Background blur effect for a more polished look
+        backdropFilter: 'blur(8px)',
       }}
     >
       <CssBaseline />
       <AppBar position="static" sx={{ backgroundColor: 'rgba(0, 0, 0, 0.7)', boxShadow: 4 }}>
         <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
-          <Typography variant="h6" color="inherit">Loan Management</Typography>
+          <Typography variant="h6" color="inherit">
+            Loan Management
+          </Typography>
           <Box>
             <Button color="inherit" sx={{ mx: 1 }} component={Link} to="/register">
               Sign Up
             </Button>
-            <Button color="inherit" sx={{ mx: 1 }} component={Link} to="/login">
+
+            {/* Login Button with Dropdown */}
+            <Button
+              color="inherit"
+              sx={{ mx: 1 }}
+              aria-controls="login-menu"
+              aria-haspopup="true"
+              onClick={handleMenuOpen}
+            >
               Login
             </Button>
+            <Menu
+              id="login-menu"
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              onClose={handleMenuClose}
+              MenuListProps={{
+                'aria-labelledby': 'login-button',
+              }}
+            >
+              <MenuItem component={Link} to="/login" onClick={handleMenuClose}>
+                User Login
+              </MenuItem>
+              <MenuItem component={Link} to="/admin-login" onClick={handleMenuClose}>
+                Admin Login
+              </MenuItem>
+            </Menu>
           </Box>
         </Toolbar>
       </AppBar>
@@ -109,10 +146,14 @@ export default function Home() {
           padding: '40px',
           mt: 6,
           boxShadow: 3,
-          backdropFilter: 'blur(5px)', // Adding blur to content area for smooth effect
+          backdropFilter: 'blur(5px)',
         }}
       >
-        <Typography variant="h3" align="center" sx={{ mb: 6, fontWeight: 700, fontSize: '36px', color: '#333', letterSpacing: '2px' }}>
+        <Typography
+          variant="h3"
+          align="center"
+          sx={{ mb: 6, fontWeight: 700, fontSize: '36px', color: '#333', letterSpacing: '2px' }}
+        >
           Welcome to the Loan Management System
         </Typography>
 
@@ -126,11 +167,11 @@ export default function Home() {
                   minHeight: '400px',
                   boxShadow: 4,
                   borderRadius: '12px',
-                  transition: 'transform 0.3s ease, box-shadow 0.3s ease, filter 0.3s ease', // Smooth hover transitions
+                  transition: 'transform 0.3s ease, box-shadow 0.3s ease, filter 0.3s ease',
                   '&:hover': {
                     boxShadow: '0 15px 30px rgba(0, 0, 0, 0.2)',
                     transform: 'scale(1.05)',
-                    filter: 'brightness(1.1)', // Brighten on hover
+                    filter: 'brightness(1.1)',
                   },
                 }}
               >
@@ -180,33 +221,45 @@ export default function Home() {
       </footer>
 
       {/* Dialog for displaying loan details */}
-      <Dialog open={open} onClose={handleClose} sx={{ '& .MuiDialog-paper': { borderRadius: '12px', padding: '30px' } }}>
-        <DialogTitle sx={{ backgroundColor: '#3f51b5', color: 'white', borderTopLeftRadius: '12px', borderTopRightRadius: '12px' }}>
-          {selectedLoan ? selectedLoan.title : ''}
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        sx={{ '& .MuiDialog-paper': { borderRadius: '12px', padding: '30px' } }}
+      >
+        <DialogTitle
+          sx={{
+            backgroundColor: '#3f51b5',
+            color: 'white',
+            fontWeight: 700,
+            borderRadius: '12px 12px 0 0',
+          }}
+        >
+          {selectedLoan?.title}
         </DialogTitle>
-        <DialogContent sx={{ padding: '20px' }}>
-          <Typography variant="body1" sx={{ color: '#333' }}>
-            {selectedLoan ? selectedLoan.details : ''}
+        <DialogContent>
+          <Typography variant="body1" sx={{ mb: 2 }}>
+            {selectedLoan?.details}
           </Typography>
-          {selectedLoan && (
-            <>
-              <Typography variant="body2" sx={{ mt: 2 }}>
-                <strong>Interest Rate:</strong> {selectedLoan.interestRate}
-              </Typography>
-              <Typography variant="body2">
-                <strong>Loan Amount:</strong> {selectedLoan.loanAmount}
-              </Typography>
-              <Typography variant="body2">
-                <strong>Tenure:</strong> {selectedLoan.tenure}
-              </Typography>
-              <Typography variant="body2">
-                <strong>Processing Fee:</strong> {selectedLoan.processingFee}
-              </Typography>
-            </>
-          )}
+          <Typography variant="body2" sx={{ fontWeight: 500, mt: 2 }}>
+            Interest Rate: {selectedLoan?.interestRate}
+          </Typography>
+          <Typography variant="body2" sx={{ fontWeight: 500 }}>
+            Loan Amount: {selectedLoan?.loanAmount}
+          </Typography>
+          <Typography variant="body2" sx={{ fontWeight: 500 }}>
+            Tenure: {selectedLoan?.tenure}
+          </Typography>
+          <Typography variant="body2" sx={{ fontWeight: 500 }}>
+            Processing Fee: {selectedLoan?.processingFee}
+          </Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} sx={{ color: '#3f51b5' }}>
+          <Button
+            onClick={handleClose}
+            variant="contained"
+            color="secondary"
+            sx={{ borderRadius: '20px', padding: '8px 16px' }}
+          >
             Close
           </Button>
         </DialogActions>

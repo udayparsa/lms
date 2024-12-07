@@ -13,14 +13,14 @@ export default function Login() {
         event.preventDefault();
         try {
             localStorage.clear();
-            const response = await axios.post('http://localhost:8080/login', {
+            const response = await axios.post('http://localhost:8080/adminlogin', {
                 email: email,
                 password: password,
             });
             if (response.data === "Login Successfull") {
                 setStatus('success');
                 localStorage.setItem('email',email);
-                navigate('/layout/dashboard');
+                navigate('/adminpage');
             } else {
                 setStatus('error');
             }
@@ -40,7 +40,7 @@ export default function Login() {
     };
 
     const backgroundStyle = {
-        backgroundImage: 'url(https://img.freepik.com/free-photo/financial-income-economic-diagram-money-concept_53876-121065.jpg?size=626&ext=jpg&ga=GA1.1.2076430500.1706848681&semt=ais_hybrid)',
+        backgroundImage: 'url(https://images.pexels.com/photos/2882566/pexels-photo-2882566.jpeg?auto=compress&cs=tinysrgb&w=600)',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         position: 'absolute',
@@ -96,7 +96,7 @@ export default function Login() {
             <Box sx={backgroundStyle} />
             <Box sx={boxStyle}>
                 <Typography variant="h5" align="center" sx={titleStyle}>
-                    Login
+                  Welcome,admin
                 </Typography>
                 <form onSubmit={handleSubmit}>
                     <TextField
@@ -129,15 +129,7 @@ export default function Login() {
                     >
                         Login
                     </Button>
-                    <Typography variant="body2" align="center" sx={{ marginTop: '1rem' }}>
-                        Don't have an account? 
-                        <Button 
-                            onClick={() => navigate('/register')} 
-                            color="primary" 
-                            style={{ textDecoration: 'underline', padding: 0 }}>
-                            Register
-                        </Button>
-                    </Typography>
+                    
                     {status === 'success' && 
                         <Alert severity="success" sx={{ marginTop: '1rem' }}>
                             Logged in successfully!

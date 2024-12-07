@@ -8,7 +8,8 @@ import Applyloans from './ui/applyloans';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Appliedloans from './ui/appliedloans';
 import Loanhistory from './ui/loanhistory';
-
+import Adminlogin from './ui/adminlogin';
+import Adminhome from './ui/adminhome';
 function App() {
   return (
     <div className="App">
@@ -16,8 +17,9 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
+          <Route path='/admin-login' element={<Adminlogin/>}/>
           <Route path="/register" element={<Register />} />
-          
+          <Route path="/adminpage"element={<Adminhome/>}/>
           {/* Routes with Sidebar */}
           <Route path="/layout" element={<Layout />}>
             <Route path="dashboard" element={<div>Dashboard Page</div>} />

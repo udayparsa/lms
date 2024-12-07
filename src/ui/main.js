@@ -3,7 +3,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Drawer, List, ListItem, ListItemText, ListItemIcon, Typography, Button } from '@mui/material';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
-import HistoryIcon from '@mui/icons-material/History';
 import ScheduleIcon from '@mui/icons-material/Schedule';
 import SettingsIcon from '@mui/icons-material/Settings';
 import SupportAgentIcon from '@mui/icons-material/SupportAgent';
@@ -78,12 +77,7 @@ export default function Main() {
           </ListItemIcon>
           <ListItemText primary="Apply Loans" />
         </ListItem>
-        <ListItem button component={Link} to="/layout/loan-history">
-          <ListItemIcon>
-            <HistoryIcon color="primary" />
-          </ListItemIcon>
-          <ListItemText primary="Loan History" />
-        </ListItem>
+     
         <ListItem button component={Link} to="/layout/repayment-schedule">
           <ListItemIcon>
             <ScheduleIcon color="primary" />
