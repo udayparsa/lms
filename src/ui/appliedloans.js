@@ -135,9 +135,7 @@ export default function AppliedLoans() {
           <div style={popupContainerStyle}>
             <div style={popupHeaderStyle}>
               <Typography variant="h6">PDF Viewer</Typography>
-              <button style={closeButtonStyle} onClick={closeModal}>
-                ✖
-              </button>
+              <button style={closeButtonStyle} onClick={closeModal}>✖</button>
             </div>
             <iframe src={selectedPdfUrl} style={iframeStyle} title="PDF Viewer" />
           </div>
@@ -148,8 +146,47 @@ export default function AppliedLoans() {
 }
 
 // Popup styles
-const popupOverlayStyle = { /* same as before */ };
-const popupContainerStyle = { /* same as before */ };
-const popupHeaderStyle = { /* same as before */ };
-const closeButtonStyle = { /* same as before */ };
-const iframeStyle = { /* same as before */ };
+const popupOverlayStyle = {
+  position: 'fixed',
+  top: 0,
+  left: 0,
+  width: '100%',
+  height: '100%',
+  backgroundColor: 'rgba(0, 0, 0, 0.7)',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  zIndex: 1000,
+};
+
+const popupContainerStyle = {
+  backgroundColor: 'white',
+  width: '80%',
+  maxWidth: '800px',
+  borderRadius: '8px',
+  overflow: 'hidden',
+  position: 'relative',
+};
+
+const popupHeaderStyle = {
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  padding: '1rem',
+  borderBottom: '1px solid #ddd',
+  backgroundColor: '#f5f5f5',
+};
+
+const closeButtonStyle = {
+  background: 'none',
+  border: 'none',
+  fontSize: '1.5rem',
+  cursor: 'pointer',
+  color: '#333',
+};
+
+const iframeStyle = {
+  width: '100%',
+  height: '600px',
+  border: 'none',
+};

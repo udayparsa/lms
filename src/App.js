@@ -10,6 +10,7 @@ import Appliedloans from './ui/appliedloans';
 import Loanhistory from './ui/loanhistory';
 import Adminlogin from './ui/adminlogin';
 import Adminhome from './ui/adminhome';
+import Dashboard from './ui/dashboard';
 function App() {
   return (
     <div className="App">
@@ -22,7 +23,7 @@ function App() {
           <Route path="/adminpage"element={<Adminhome/>}/>
           {/* Routes with Sidebar */}
           <Route path="/layout" element={<Layout />}>
-            <Route path="dashboard" element={<div>Dashboard Page</div>} />
+            <Route path="dashboard" element={<Dashboard/>} />
             <Route path="applied-loans" element={<Appliedloans/>} />
             <Route path="applyloans" element={<Applyloans />} />
             <Route path="loan-history" element={<Loanhistory/>} />

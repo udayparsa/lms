@@ -62,6 +62,7 @@ export default function Adminhome() {
 
   const handleStatusChange = async (email, loanType, status) => {
     try {
+      // Sending request to update the loan status
       const params = new URLSearchParams();
       params.append("email", email);
       params.append("loanType", loanType);
@@ -75,15 +76,15 @@ export default function Adminhome() {
         // Log to console
         console.log(`Loan status updated: ${email}, ${loanType}, ${status}`);
   
-        // Update the loan status in the state and filter out the loan after update
+        // Remove the loan from the state immediately after the status change
         setAppliedLoans((prevLoans) =>
           prevLoans.filter(
             (loan) =>
-              !(loan.email === email && loan.loanType === loanType) // Remove the updated loan from the list
+              !(loan.email === email && loan.loanType === loanType) // Remove the updated loan
           )
         );
   
-        // Display popup message
+        // Display success message
         alert(`Loan ${status} successfully!`);
       }
     } catch (error) {
