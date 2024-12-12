@@ -11,6 +11,9 @@ import Loanhistory from './ui/loanhistory';
 import Adminlogin from './ui/adminlogin';
 import Adminhome from './ui/adminhome';
 import Dashboard from './ui/dashboard';
+import Loanamount from './ui/loanamount';
+import Support from './ui/support';
+
 function App() {
   return (
     <div className="App">
@@ -21,15 +24,16 @@ function App() {
           <Route path='/admin-login' element={<Adminlogin/>}/>
           <Route path="/register" element={<Register />} />
           <Route path="/adminpage"element={<Adminhome/>}/>
+          <Route path="/loanamount" element={<Loanamount/>}/>
           {/* Routes with Sidebar */}
           <Route path="/layout" element={<Layout />}>
             <Route path="dashboard" element={<Dashboard/>} />
             <Route path="applied-loans" element={<Appliedloans/>} />
             <Route path="applyloans" element={<Applyloans />} />
             <Route path="loan-history" element={<Loanhistory/>} />
-            <Route path="repayment-schedule" element={<div>Repayment Schedule Page</div>} />
+            <Route path="repayment-schedule" element={<div>Repayment</div>} />
             <Route path="settings" element={<div>Settings Page</div>} />
-            <Route path="support" element={<div>Support Page</div>} />
+            <Route path="support" element={<Support/>} />
           </Route>
         </Routes>
       </BrowserRouter> 

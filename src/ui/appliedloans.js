@@ -13,13 +13,24 @@ import {
 } from '@mui/material';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate for programmatic navigation
 
 export default function AppliedLoans() {
+  const navigate = useNavigate(); // Initialize navigate
   const [appliedLoans, setAppliedLoans] = useState([]);
   const [loading, setLoading] = useState(true);
   const [email, setEmail] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedPdfUrl, setSelectedPdfUrl] = useState('');
+  const [loanCount, setLoanCount] = useState(0);
+  const [acceptedLoanCount, setAcceptedLoanCount] = useState(0);
+  const [rejectedLoanCount, setRejectedLoanCount] = useState(0);
+  const [loanTypeCounts, setLoanTypeCounts] = useState({
+    personal: 0,
+    home: 0,
+    car: 0,
+    education: 0
+  });
 
   // Fetch the email from localStorage
   useEffect(() => {
@@ -39,9 +50,32 @@ export default function AppliedLoans() {
         return;
       }
       try {
-        console.log(`Fetching loans for email: ${email}`);
         const response = await axios.get(`http://localhost:8080/userloans?email=${email}`);
         setAppliedLoans(response.data || []);
+
+        const acceptedLoans = response.data.filter(loan => loan.status === 'accepted').length;
+        const rejectedLoans = response.data.filter(loan => loan.status === 'rejected').length;
+
+        // Count loan types
+        const loanTypes = { personal: 0, home: 0, car: 0, education: 0 };
+        response.data.forEach(loan => {
+          if (loan.loanType === 'Personal Loan') loanTypes.personal++;
+          if (loan.loanType === 'Home Loan') loanTypes.home++;
+          if (loan.loanType === 'Car Loan') loanTypes.car++;
+          if (loan.loanType === 'Education Loan') loanTypes.education++;
+        });
+
+        setLoanTypeCounts(loanTypes);
+        setLoanCount(response.data.length);
+        setAcceptedLoanCount(acceptedLoans);
+        setRejectedLoanCount(rejectedLoans);
+
+        // Store data in localStorage
+        localStorage.setItem('loanCount', response.data.length);
+        localStorage.setItem('acceptedLoanCount', acceptedLoans);
+        localStorage.setItem('rejectedLoanCount', rejectedLoans);
+        localStorage.setItem('loanTypeCounts', JSON.stringify(loanTypes));
+
       } catch (error) {
         console.error('Error fetching applied loans:', error);
       } finally {
@@ -63,6 +97,11 @@ export default function AppliedLoans() {
     } catch (error) {
       console.error('Error viewing PDF:', error);
     }
+  };
+
+  const handleProceed = (loan) => {
+    console.log('Proceeding with loan:', loan);
+    navigate('/loanamount', { state: { fullname: loan.name } }); // Pass fullname to LoanAmount page
   };
 
   const closeModal = () => {
@@ -104,7 +143,7 @@ export default function AppliedLoans() {
               <TableCell><strong>Address</strong></TableCell>
               <TableCell><strong>Phone Number</strong></TableCell>
               <TableCell><strong>Status</strong></TableCell>
-              <TableCell><strong>Documents</strong></TableCell>
+              <TableCell><strong>Actions</strong></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -119,9 +158,25 @@ export default function AppliedLoans() {
                 <TableCell>{loan.phno}</TableCell>
                 <TableCell>{loan.status || 'Pending'}</TableCell>
                 <TableCell>
-                  <IconButton color="primary" onClick={() => viewPdf(loan.email, loan.loanType)}>
-                    <VisibilityIcon />
-                  </IconButton>
+                  {loan.status === 'Accepted' ? (
+                    <button
+                      style={{
+                        backgroundColor: '#34c38f',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '4px',
+                        padding: '5px 10px',
+                        cursor: 'pointer',
+                      }}
+                      onClick={() => handleProceed(loan)}
+                    >
+                      Proceed
+                    </button>
+                  ) : (
+                    <IconButton color="primary" onClick={() => viewPdf(loan.email, loan.loanType)}>
+                      <VisibilityIcon />
+                    </IconButton>
+                  )}
                 </TableCell>
               </TableRow>
             ))}
