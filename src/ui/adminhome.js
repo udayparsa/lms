@@ -39,7 +39,7 @@ export default function Adminhome() {
   const viewPdf = async (email, loanType) => {
     try {
       const response = await axios.get(
-      `http://localhost:8080/api/pdf/view/${email}/${loanType}`,
+        `http://localhost:8080/api/pdf/view/${email}/${loanType}`,
         {
           responseType: 'blob',
         }
@@ -62,38 +62,31 @@ export default function Adminhome() {
 
   const handleStatusChange = async (email, loanType, status) => {
     try {
-      // Sending request to update the loan status
       const params = new URLSearchParams();
-      params.append("email", email);
-      params.append("loanType", loanType);
-      params.append("status", status);
-  
-      const response = await axios.post("http://localhost:8080/updateStatus", params, {
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      params.append('email', email);
+      params.append('loanType', loanType);
+      params.append('status', status);
+
+      const response = await axios.post('http://localhost:8080/updateStatus', params, {
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       });
-  
+
       if (response.status === 200) {
-        // Log to console
         console.log(`Loan status updated: ${email}, ${loanType}, ${status}`);
-  
-        // Remove the loan from the state immediately after the status change
         setAppliedLoans((prevLoans) =>
-          prevLoans.filter(
-            (loan) =>
-              !(loan.email === email && loan.loanType === loanType) // Remove the updated loan
+          prevLoans.map((loan) =>
+            loan.email === email && loan.loanType === loanType
+              ? { ...loan, status } // Update the loan's status
+              : loan
           )
         );
-  
-        // Display success message
         alert(`Loan ${status} successfully!`);
       }
     } catch (error) {
-      console.error("Error updating loan status:", error.response?.data || error.message);
-      alert("Failed to update loan status. Please try again.");
+      console.error('Error updating loan status:', error.response?.data || error.message);
+      alert('Failed to update loan status. Please try again.');
     }
   };
-  
-  
 
   return (
     <Box sx={{ padding: 5, backgroundColor: '#006064', minHeight: '100vh' }}>
@@ -110,30 +103,14 @@ export default function Adminhome() {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>
-                <strong>Loan Type</strong>
-              </TableCell>
-              <TableCell>
-                <strong>Applicant Name</strong>
-              </TableCell>
-              <TableCell>
-                <strong>Credit Score</strong>
-              </TableCell>
-              <TableCell>
-                <strong>Employment Status</strong>
-              </TableCell>
-              <TableCell>
-                <strong>Age</strong>
-              </TableCell>
-              <TableCell>
-                <strong>Address</strong>
-              </TableCell>
-              <TableCell>
-                <strong>Phone Number</strong>
-              </TableCell>
-              <TableCell>
-                <strong>Actions</strong>
-              </TableCell>
+              <TableCell><strong>Loan Type</strong></TableCell>
+              <TableCell><strong>Applicant Name</strong></TableCell>
+              <TableCell><strong>Credit Score</strong></TableCell>
+              <TableCell><strong>Employment Status</strong></TableCell>
+              <TableCell><strong>Age</strong></TableCell>
+              <TableCell><strong>Address</strong></TableCell>
+              <TableCell><strong>Phone Number</strong></TableCell>
+              <TableCell><strong>Actions</strong></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -152,6 +129,7 @@ export default function Adminhome() {
                       variant="contained"
                       color="success"
                       onClick={() => handleStatusChange(loan.email, loan.loanType, 'Accepted')}
+                      disabled={loan.status === 'Accepted' || loan.status === 'Rejected'}
                     >
                       Accept
                     </Button>
@@ -159,6 +137,7 @@ export default function Adminhome() {
                       variant="contained"
                       color="error"
                       onClick={() => handleStatusChange(loan.email, loan.loanType, 'Rejected')}
+                      disabled={loan.status === 'Accepted' || loan.status === 'Rejected'}
                     >
                       Reject
                     </Button>
@@ -182,9 +161,7 @@ export default function Adminhome() {
           <div style={popupContainerStyle}>
             <div style={popupHeaderStyle}>
               <Typography variant="h6">PDF Viewer</Typography>
-              <button style={closeButtonStyle} onClick={closeModal}>
-                ✖
-              </button>
+              <button style={closeButtonStyle} onClick={closeModal}>✖</button>
             </div>
             <iframe
               src={selectedPdfUrl}
