@@ -16,7 +16,7 @@ export default function Register() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.post('http://localhost:8080/insert', {
+      const response = await axios.post('https://ingenious-expression-production.up.railway.app/insert', {
         name: name,
         age: age,
         email: email,
