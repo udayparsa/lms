@@ -1,12 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Drawer, List, ListItem, ListItemText, ListItemIcon, Typography, Button } from '@mui/material';
+import {
+  Drawer,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemIcon,
+  Typography,
+  Button,
+} from '@mui/material';
+
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import ScheduleIcon from '@mui/icons-material/Schedule';
 import SettingsIcon from '@mui/icons-material/Settings';
 import SupportAgentIcon from '@mui/icons-material/SupportAgent';
 import ApprovalIcon from '@mui/icons-material/Approval';
+
 import axios from 'axios';
 
 export default function Main() {
@@ -16,24 +26,28 @@ export default function Main() {
   useEffect(() => {
     const fetchUser = async () => {
       const email = localStorage.getItem('email');
-      if(email===null){
+      console.log("Fetched email from localStorage:", email);
+
+      if (!email) {
         navigate('/');
+        return;
       }
+
       try {
-        const res = await axios.get(`https://ingenious-expression-production.up.railway.app/finduser/${email}`);
-        setUsername(res.data.name);
+        const res = await axios.get(`http://localhost:8080/${email}`);
+        console.log("Backend response:", res.data);
+        setUsername(res.data.name || 'User');
       } catch (error) {
-        console.log(error);
+        console.error('Failed to fetch user:', error);
       }
     };
 
     fetchUser();
-  }, []); 
+  }, [navigate]);
 
-  // Function to handle logout
   const handleLogout = () => {
-    localStorage.removeItem('email'); // Clear email from localStorage
-    navigate('/'); // Redirect to the home page (root path)
+    localStorage.removeItem('email');
+    navigate('/');
   };
 
   return (
@@ -52,9 +66,14 @@ export default function Main() {
       <Typography variant="h6" align="center" sx={{ mb: 2 }}>
         Loan Management System
       </Typography>
-      {username && (
+
+      {username ? (
         <Typography variant="body1" sx={{ paddingLeft: 2, paddingBottom: 2 }}>
           Welcome, {username}!
+        </Typography>
+      ) : (
+        <Typography variant="body2" sx={{ paddingLeft: 2, paddingBottom: 2 }}>
+          Loading user...
         </Typography>
       )}
 
@@ -65,31 +84,35 @@ export default function Main() {
           </ListItemIcon>
           <ListItemText primary="Dashboard" />
         </ListItem>
+
         <ListItem button component={Link} to="/layout/applied-loans">
           <ListItemIcon>
             <AccountBalanceIcon color="primary" />
           </ListItemIcon>
           <ListItemText primary="Applied Loans" />
         </ListItem>
+
         <ListItem button component={Link} to="/layout/applyloans">
           <ListItemIcon>
             <ApprovalIcon color="primary" />
           </ListItemIcon>
           <ListItemText primary="Apply Loans" />
         </ListItem>
-     
+
         <ListItem button component={Link} to="/layout/repayment-schedule">
           <ListItemIcon>
             <ScheduleIcon color="primary" />
           </ListItemIcon>
           <ListItemText primary="Repayment Schedule" />
         </ListItem>
+
         <ListItem button component={Link} to="/layout/settings">
           <ListItemIcon>
             <SettingsIcon color="primary" />
           </ListItemIcon>
           <ListItemText primary="Settings" />
         </ListItem>
+
         <ListItem button component={Link} to="/layout/support">
           <ListItemIcon>
             <SupportAgentIcon color="primary" />
@@ -98,7 +121,6 @@ export default function Main() {
         </ListItem>
       </List>
 
-      {/* Logout button at the bottom */}
       <Button
         onClick={handleLogout}
         sx={{
